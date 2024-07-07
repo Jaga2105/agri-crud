@@ -2,6 +2,7 @@ import { AddCircleOutline } from "@mui/icons-material";
 import { Box, Button, Container, CssBaseline, Typography } from "@mui/material";
 import AddCropModal from "./components/AddCropModal";
 import { useState } from "react";
+import CropsTable from "./components/CropsTable";
 
 function App() {
 
@@ -15,10 +16,10 @@ function App() {
   }
   return (
     <div>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       {/* <Container maxWidth="sm" sx={{ bgcolor: "#cfe8fc", height: "100vh" }}> */}
       <Container maxWidth="sm">
-        <Box sx={{ height: "100vh" }}>
+        <Box  sx={{mb:4}}>
           <Box
             mt={4}
             display="flex"
@@ -35,6 +36,9 @@ function App() {
           {/* <Box  /> */}
         </Box>
         <AddCropModal open={open} handleCloseAddCropModal={handleCloseAddCropModal}/>
+
+        {/* Table */}
+        <CropsTable/>
       </Container>
     </div>
   );

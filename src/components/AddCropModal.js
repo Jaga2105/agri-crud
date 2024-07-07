@@ -19,6 +19,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { formattedDate } from "../helpers/formattedDate";
 // import React, { useState } from "react";
 
 const validationSchema = yup.object({
@@ -51,7 +52,14 @@ const AddCropModal = ({ open, handleCloseAddCropModal }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      console.log(values.startDate["$d"].toLocaleDateString('en-GB'))
+      const newObj ={
+        name:values.name,
+        contractPeriod:`${formattedDate(values.startDate)} - ${formattedDate(values.endDate)}`,
+        cropYear:values.cropYear,
+        price:values.price
+      }
+      console.log(newObj);
       handleClosePopup();
     },
   });
