@@ -7,6 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AllCrops } from "./Data";
 import EditCropModal from "./components/EditCropModal";
 import { deleteCrop } from "./store/reducers/cropSlice";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   const [openAddCropModal, setOpenAddCropModal] = useState(false);
@@ -34,6 +37,18 @@ function App() {
     const updatedArr = crops.filter((crop,idx)=>idx!=index);
     dispatch(deleteCrop(updatedArr));
     setCrops(updatedArr)
+    // toast.success('Crop deleted successfully!');
+    toast.error('Item deleted successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      // transition: Bounce,
+      });
   }
   useEffect(()=>{
     setCrops(allCrops);

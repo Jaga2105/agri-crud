@@ -27,6 +27,8 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useEffect, useState } from "react";
 // import React, { useState } from "react";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const validationSchema = yup.object({
   cropName: yup.string().required("Crop Name is required"),
@@ -93,6 +95,17 @@ const EditCropModal = ({ open, editIdx, handleCloseEditModal }) => {
       console.log("Updated crops array:", editedCrops);
       dispatch(editCrop(editedCrops));
       handleClosePopup();
+      toast.success('Item edited successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        // transition: Bounce,
+        });
     },
   });
 

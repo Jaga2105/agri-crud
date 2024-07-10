@@ -23,6 +23,8 @@ import { formattedDate } from "../helpers/formattedDate";
 import { useDispatch } from "react-redux";
 import { addCrop } from "../store/reducers/cropSlice";
 // import React, { useState } from "react";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const validationSchema = yup.object({
   cropName: yup.string().required("Crop Name is required"),
@@ -65,6 +67,17 @@ const AddCropModal = ({ open, handleCloseAddCropModal }) => {
       console.log(newObj);
       dispatch(addCrop(newObj));
       handleClosePopup();
+      toast.success('Item added successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        // transition: Bounce,
+        });
     },
   });
 
