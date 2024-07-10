@@ -1,19 +1,46 @@
 import { AddCircleOutline } from "@mui/icons-material";
 import { Box, Button, Container, CssBaseline, Typography } from "@mui/material";
 import AddCropModal from "./components/AddCropModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CropsTable from "./components/CropsTable";
+import { useDispatch, useSelector } from "react-redux";
+import { AllCrops } from "./Data";
+import EditCropModal from "./components/EditCropModal";
+import { deleteCrop } from "./store/reducers/cropSlice";
 
 function App() {
 
-  const [open, setOpen] = useState(false);
+  const [openAddCropModal, setOpenAddCropModal] = useState(false);
+  const allCrops = useSelector((state) => state.crops);
+  console.log(allCrops)
+  const [crops, setCrops] =useState(allCrops)
+  const [openEditCropModal, setOpenEditCropModal]= useState(false);
+  const [editIdx, setEditIdx] = useState(-1);
+  const dispatch= useDispatch();
 
   const handleOpenAddCropModal = () =>{
-    setOpen(true)
+    setOpenAddCropModal(true)
   }
+
   const handleCloseAddCropModal = () =>{
-    setOpen(false)
+    setOpenAddCropModal(false)
   }
+  const handleCloseEditModal = ()=>{
+    console.log("edit closed")
+    setEditIdx(-1);
+    setOpenEditCropModal(false)
+  }
+  const handleDeleteCrop = (index) =>{
+    // setDeleteIndex(index)
+    const updatedArr = crops.filter((crop,idx)=>idx!=index);
+    dispatch(deleteCrop(updatedArr));
+    setCrops(updatedArr)
+  }
+  useEffect(()=>{
+    setCrops(allCrops);
+  },[openAddCropModal, editIdx, dispatch])
+  console.log(crops)
+
   return (
     <div>
       {/* <CssBaseline /> */}
@@ -35,10 +62,15 @@ function App() {
           </Box>
           {/* <Box  /> */}
         </Box>
-        <AddCropModal open={open} handleCloseAddCropModal={handleCloseAddCropModal}/>
+        <AddCropModal open={openAddCropModal} handleCloseAddCropModal={handleCloseAddCropModal}/>
 
         {/* Table */}
-        <CropsTable/>
+        <CropsTable crops={crops} setEditIdx={setEditIdx} setOpenEditCropModal={setOpenEditCropModal} handleDeleteCrop={handleDeleteCrop}/>
+        {openEditCropModal && (
+          <EditCropModal open={openEditCropModal} editIdx={editIdx} handleCloseEditModal={handleCloseEditModal}/>
+        )}
+        {/* <EditCropModal open={openEditCropModal} editIdx={editIdx} setOpenEditCropModal={setOpenEditCropModal}/> */}
+
       </Container>
     </div>
   );

@@ -16,10 +16,17 @@ export const formattedDate = (dateObj) => {
   ];
 
   const day = date.getDate();
+  let dayDate = "";
+  if(day<10){
+    dayDate=`0${day}`
+  }else{
+    dayDate=`${day}`
+  }
+console.log(typeof day)
   const month = date.getMonth();
   const year = date.getFullYear();
 
-  const formattedDate = `${day} ${months[month]} ${year}`;
+  const formattedDate = `${dayDate} ${months[month]} ${year}`;
 
   return formattedDate;
 };

@@ -20,8 +20,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { formattedDate } from "../helpers/formattedDate";
-import { useDispatch } from "react-redux";
-import { addCrop } from "../store/reducers/cropSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addCrop, editCrop } from "../store/reducers/cropSlice";
+import { AllCrops } from "../Data";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useEffect, useState } from "react";
 // import React, { useState } from "react";
 
 const validationSchema = yup.object({
@@ -41,37 +45,60 @@ const validationSchema = yup.object({
     .min(yup.ref("startDate"), "End Date cannot be before Start Date"),
 });
 
-const AddCropModal = ({ open, handleCloseAddCropModal }) => {
+const EditCropModal = ({ open, editIdx, handleCloseEditModal }) => {
   const dispatch = useDispatch();
+  const crops = useSelector((state) => state.crops);
+  //   const [crops, setCrops] = useState(allCrops);
+  const formatDateObject = (date) => {
+    const format = "DD MMM YYYY";
+    const dateObject = dayjs(date, format);
+    return dateObject;
+  };
+
+  const editableIndexCrop = crops.find((ele, idx) => idx === editIdx);
+  const editingCrop = {
+    cropName: editableIndexCrop.cropName,
+    cropYear: editableIndexCrop.cropYear,
+    price: editableIndexCrop.price,
+    startDate: formatDateObject(editableIndexCrop.contractPeriod.slice(0, 11)),
+    endDate: formatDateObject(editableIndexCrop.contractPeriod.slice(14, 26)),
+  };
+
+  const handleClosePopup = () => {
+    // setOpenEditCropModal(false);
+    handleCloseEditModal();
+  };
 
   const formik = useFormik({
-    initialValues: {
-      cropName: "",
-      cropYear: "Select Crop Year",
-      price: "",
-      startDate: null,
-      endDate: null,
-    },
+    initialValues: editingCrop,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log("Submitted")
-      console.log(values.startDate["$d"])
-      const newObj ={
-        cropName:values.cropName,
-        contractPeriod:`${formattedDate(values.startDate)} - ${formattedDate(values.endDate)}`,
-        cropYear:values.cropYear,
-        price:values.price
-      }
-      console.log(newObj);
-      dispatch(addCrop(newObj));
+      console.log(values);
+        const editedObj = {
+          cropName: values.cropName,
+          contractPeriod: `${formattedDate(values.startDate)} - ${formattedDate(
+            values.endDate
+          )}`,
+          cropYear: values.cropYear,
+          price: values.price,
+        };
+        // crops[editIdx]= values;
+        // console.log(crops)
+        // dispatch(editCrop(crops));
+        // handleClosePopup();
+      const editedCrops = crops.map((crop, idx) =>
+        idx === editIdx ? editedObj : crop
+      );
+
+      console.log("Updated crops array:", editedCrops);
+      dispatch(editCrop(editedCrops));
       handleClosePopup();
     },
   });
 
-  const handleClosePopup = () =>{
-    formik.resetForm();
-    handleCloseAddCropModal();
-  }
+  //   useEffect(()=>{
+  //     setCrops()
+  //   },[dispatch]);
 
   return (
     <Dialog
@@ -82,16 +109,18 @@ const AddCropModal = ({ open, handleCloseAddCropModal }) => {
         // onSubmit: formik.handleSubmit,
         onSubmit: (e) => {
           e.preventDefault(); // Prevent default form submission
-          console.log("Form is being submitted"); // Debugging log
-          console.log("Formik Values:", formik.values); // Debugging log
+          // console.log("Form is being submitted"); // Debugging log
+          // console.log("Formik Values:", formik.values); // Debugging log
           formik.handleSubmit(e); // Call Formik's handleSubmit
-          console.log("Formik Errors:", formik.errors); // Debugging log
+          // console.log("Formik Errors:", formik.errors); // Debugging log
         },
       }}
       fullWidth
     >
       <Box display={"flex"} justifyContent={"space-between"}>
-        <DialogTitle>Fill the crop details to add</DialogTitle>
+        <DialogTitle sx={{ fontSize: 20 }}>
+          Edit Crop contract details
+        </DialogTitle>
         <CloseOutlined
           sx={{ marginRight: 3, marginTop: 2, cursor: "pointer", color: "red" }}
           onClick={handleClosePopup}
@@ -105,7 +134,7 @@ const AddCropModal = ({ open, handleCloseAddCropModal }) => {
             <FormLabel>Crop Name</FormLabel>
             <TextField
               // label="Crop Name"
-              name="cropName"
+              name="name"
               autoComplete="off"
               variant="outlined"
               value={formik.values.cropName}
@@ -144,35 +173,34 @@ const AddCropModal = ({ open, handleCloseAddCropModal }) => {
                   inputFormat="dd/MM/yyyy"
                 />
                 <Box fontSize={"20px"}>&#x2010;</Box>
-                <Box sx={{width:"100%"}}>
-                <DatePicker
-                  label="End Date"
-                  value={formik.values.endDate}
-                  onChange={(date) => formik.setFieldValue("endDate", date)}
-                  components={{
-                    TextField: (params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        error={
-                          formik.touched.endDate &&
-                          Boolean(formik.errors.endDate)
-                        }
-                        helperText={
-                          formik.touched.endDate && formik.errors.endDate
-                        }
-                      />
-                    ),
-                  }}
-                  
-                  sx={{ width: "100%" }}
-                  minDate={formik.values.startDate}
-                />
-                {formik.touched.endDate && formik.errors.endDate && (
-                  <Box sx={{ color: "red", fontSize: "12px", mt: 1 }}>
-                    {"End Date cannot be before Start Date"}
-                  </Box>
-                )}
+                <Box sx={{ width: "100%" }}>
+                  <DatePicker
+                    label="End Date"
+                    value={formik.values.endDate}
+                    onChange={(date) => formik.setFieldValue("endDate", date)}
+                    components={{
+                      TextField: (params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          error={
+                            formik.touched.endDate &&
+                            Boolean(formik.errors.endDate)
+                          }
+                          helperText={
+                            formik.touched.endDate && formik.errors.endDate
+                          }
+                        />
+                      ),
+                    }}
+                    sx={{ width: "100%" }}
+                    minDate={formik.values.startDate}
+                  />
+                  {formik.touched.endDate && formik.errors.endDate && (
+                    <Box sx={{ color: "red", fontSize: "12px", mt: 1 }}>
+                      {"End Date cannot be before Start Date"}
+                    </Box>
+                  )}
                 </Box>
               </Box>
             </LocalizationProvider>
@@ -234,11 +262,11 @@ const AddCropModal = ({ open, handleCloseAddCropModal }) => {
           type="submit"
           sx={{ m: 1, width: "25ch" }}
         >
-          Submit
+          Update
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default AddCropModal;
+export default EditCropModal;

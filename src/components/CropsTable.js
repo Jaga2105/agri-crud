@@ -12,9 +12,10 @@ import {
   Tooltip,
 } from "@mui/material";
 import React, { useState } from "react";
-import { AllCrops } from "../Data";
+// import { AllCrops } from "../Data";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import EditCropModal from "./EditCropModal";
 
 const columns = [
   "Crop Name",
@@ -24,9 +25,11 @@ const columns = [
   "Action",
 ];
 
-const CropsTable = () => {
+const CropsTable = ({crops, setEditIdx, setOpenEditCropModal, handleDeleteCrop}) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+//   const [openEditCropModal, setOpenEditCropModal]= useState(false);
+//   const [editIdx, setEditIdx] = useState(-1);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -36,6 +39,18 @@ const CropsTable = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const handleEditModal = (index)=>{
+    console.log("edit clicked")
+    setEditIdx(index);
+    setOpenEditCropModal(true)
+  }
+//   const handleDeleteCrop = (index) =>{
+    
+//   }
+//   const handleCloseEditModal = ()=>{
+//     setEditIdx(-1);
+//     setOpenEditCropModal(false)
+//   }
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", boxShadow: 4 }}>
       <TableContainer sx={{ maxHeight: 400 }}>
@@ -59,7 +74,7 @@ const CropsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {AllCrops.slice(
+            {crops.slice(
               page * rowsPerPage,
               page * rowsPerPage + rowsPerPage
             ).map((crop, index) => {
@@ -75,7 +90,10 @@ const CropsTable = () => {
                   <TableCell align="center">
                     <Box display={"flex"}>
                       <Tooltip title="Edit" placement="top" arrow>
-                        <IconButton aria-label="edit" sx={{ color: "#64DF78" }}>
+                        <IconButton aria-label="edit" sx={{ color: "#64DF78" }}
+                         onClick={()=>handleEditModal(index)}
+                         >
+                            {console.log(1)}
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
@@ -83,6 +101,7 @@ const CropsTable = () => {
                         <IconButton
                           aria-label="delete"
                           sx={{ color: "#CD5767" }}
+                          onClick={()=>handleDeleteCrop(index)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -98,12 +117,13 @@ const CropsTable = () => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 15]}
         component="div"
-        count={AllCrops.length}
+        count={crops.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      {/* <EditCropModal open={openEditCropModal} editIdx={editIdx} setOpenEditCropModal={setOpenEditCropModal}/> */}
     </Paper>
   );
 };
