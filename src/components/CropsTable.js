@@ -21,8 +21,8 @@ const columns = [
   "Crop Name",
   "Contract Period",
   "Crop Year",
-  "Price",
-  "Action",
+  "Price (₹)",
+  "Actions",
 ];
 
 const CropsTable = ({crops, setEditIdx, setOpenEditCropModal, handleDeleteCrop}) => {
@@ -60,7 +60,7 @@ const CropsTable = ({crops, setEditIdx, setOpenEditCropModal, handleDeleteCrop})
               {columns.map((column) => (
                 <TableCell
                   key={column.name}
-                  align={"start"}
+                  align={"center"}
                   style={{
                     width: "130px",
                     fontSize: "16px",
@@ -82,13 +82,13 @@ const CropsTable = ({crops, setEditIdx, setOpenEditCropModal, handleDeleteCrop})
                 <TableRow key={index} align={"center"}>
                   {Object.keys(crop).map((key) => {
                     return (
-                      <TableCell align={"start"} sx={{ width: "130px" }}>
+                      <TableCell align={"center"} sx={{ width: "80px" }}>
                         {crop[key]}
                       </TableCell>
                     );
                   })}
-                  <TableCell align="center">
-                    <Box display={"flex"}>
+                  <TableCell align="start">
+                    <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
                       <Tooltip title="Edit" placement="top" arrow>
                         <IconButton aria-label="edit" sx={{ color: "#64DF78" }}
                          onClick={()=>handleEditModal(index)}

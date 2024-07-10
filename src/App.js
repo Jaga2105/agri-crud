@@ -9,7 +9,6 @@ import EditCropModal from "./components/EditCropModal";
 import { deleteCrop } from "./store/reducers/cropSlice";
 
 function App() {
-
   const [openAddCropModal, setOpenAddCropModal] = useState(false);
   const allCrops = useSelector((state) => state.crops);
   console.log(allCrops)
@@ -45,7 +44,7 @@ function App() {
     <div>
       {/* <CssBaseline /> */}
       {/* <Container maxWidth="sm" sx={{ bgcolor: "#cfe8fc", height: "100vh" }}> */}
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         <Box  sx={{mb:4}}>
           <Box
             mt={4}
@@ -54,7 +53,7 @@ function App() {
             alignItems="center"
           >
             <Typography variant="h5" my={1} color="primary">
-              Crop Details
+              Crop Contract Details
             </Typography>
             <Button variant="outlined" endIcon={<AddCircleOutline />} onClick={handleOpenAddCropModal}>
               Add New
