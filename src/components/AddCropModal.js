@@ -247,7 +247,7 @@ const AddCropModal = ({ open, handleCloseAddCropModal }) => {
           type="submit"
           sx={{ m: 1, width: "25ch" }}
         >
-          Submit
+          Add
         </Button>
       </DialogActions>
     </Dialog>
